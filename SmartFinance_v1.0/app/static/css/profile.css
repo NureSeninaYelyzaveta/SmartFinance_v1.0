@@ -1,0 +1,364 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: linear-gradient(
+        135deg,
+        #f7f7fb 0%,
+        #f3f0ff 40%,
+        #f8f9fb 70%,
+        #ffffff 100%
+    );
+
+    z-index: -1;
+}
+
+.header {
+    background: #ffffff !important;
+    text-align: center;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.logo {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0 0 30px 0;
+    color: #e96209;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+.logo::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #e96209, #6b1fb3);
+    border-radius: 2px;
+}
+
+.nav {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #6b1fb3;
+    font-weight: 600;
+    font-size: 18px;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.nav a:hover {
+    background: linear-gradient(90deg, #4a127d, #6b1fb3);
+    color: #fff;
+}
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f4f8;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+.profile-block {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 28px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+
+    padding: 35px;
+    transition: 0.3s ease;
+}
+
+.profile-block:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 14px 40px rgba(0,0,0,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.profile-title {
+    text-align: center;
+    margin-bottom: 25px;
+
+    font-size: 28px;
+    font-weight: 700;
+
+    color: #4a127d;
+    letter-spacing: 0.5px;
+
+    position: relative;
+}
+
+.profile-title::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -8px;
+
+    width: 80px;
+    height: 3px;
+
+    background: linear-gradient(90deg, #e96209, #6b1fb3);
+    border-radius: 2px;
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #4a127d;
+    margin-bottom: 5px;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="number"],
+.profile-form input[type="file"],
+.profile-form select {
+
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 10px;
+
+    padding: 12px 14px;
+    transition: 0.25s ease;
+}
+
+.profile-form input:focus,
+.profile-form select:focus {
+    border-color: #6b1fb3;
+    box-shadow: 0 0 0 3px rgba(107,31,179,0.15);
+}
+
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ccc;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-wrapper img,
+#profilePhoto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+
+#profilePhoto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   
+    display: block;      
+}
+
+#uploadPhoto {
+    display: none;
+}
+
+.upload-btn {
+    margin-top: 10px;
+    cursor: pointer;
+    color: #fff;
+    background: #6b1fb3;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.2s;
+    display: inline-block;
+}
+
+.upload-btn:hover {
+    background: #4a127d;
+}
+
+.checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #333;
+}
+
+.checkbox input {
+    accent-color: #6b1fb3;
+}
+
+.btn {
+    margin-top: 15px;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #4a127d, #6b1fb3);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: linear-gradient(90deg, #6b1fb3, #4a127d);
+    transform: translateY(-2px);
+}
+
+.footer {
+    text-align: center;
+    padding: 14px 0;
+    background: linear-gradient(135deg, #2B0A3D, #4A127D, #6B1FB3); 
+    color: #fff;
+    position: relative; 
+}
+
+.nav-link {
+    color: #4a127d;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+
+body.dark {
+    background: #121212;
+    color: #ffffff;
+}
+body.dark::before {
+    background: linear-gradient(
+        135deg,
+        #121212 0%,
+        #181818 35%,
+        #1e1e1e 70%,
+        #151515 100%
+    );
+}
+
+body.dark .profile-block {
+    background: #1e1e1e;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+body.dark .header {
+    background-color: #1a1a1a;
+}
+
+body.dark .form-group label {
+    color: #d6b8ff;
+}
+
+body.dark .checkbox label {
+    color: #ffffff;
+}
+
+body.dark .header {
+    background: #1a1a1a !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+
+body.dark .logo {
+    color: #ff9f5a;
+}
+
+body.dark .nav a {
+    color: #d6b8ff;
+}
+
+body.dark .nav a:hover {
+    background: linear-gradient(90deg, #6b1fb3, #4a127d);
+    color: #fff;
+    border-radius: 8px;
+}
+
+
+body.dark .profile-form input[type="text"],
+body.dark .profile-form input[type="number"],
+body.dark .profile-form input[type="file"],
+body.dark .profile-form select {
+    background: #2a2a2a;
+    color: white;
+    border: 1px solid #555;
+}
+
+body.dark .profile-form input:focus,
+body.dark .profile-form select:focus {
+    border-color: #bb86fc;
+    box-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
+}
+
+body.dark .nav-link {
+    color: #d6b8ff;
+}
+
+body.dark .logo {
+    color: #ff9f5a;
+}
+
+body.dark .footer {
+    background: linear-gradient(
+        135deg,
+        #140b1f 0%,
+        #170c22 40%,
+        #2a163b 75%,
+        #2d1741 100%
+    );
+
+    color: #eaeaea;
+}

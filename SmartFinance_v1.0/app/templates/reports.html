@@ -1,0 +1,501 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance</title>
+
+     <link rel="stylesheet" href="{% static 'css/reports.css' %}?v=2">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+
+  <body class="{{ theme }}">
+
+<div class="header-container">
+    <header class="header">
+
+        <h1 class="logo">SmartFinance</h1>
+
+        <nav class="nav">
+            <a href="/">{{ t.home }}</a>
+            <a href="/goals/">{{ t.goals }}</a>
+            <a href="/reports/">{{ t.reports }}</a>
+            <a href="/profile/">{{ t.profile }}</a>
+        </nav>
+
+    </header>
+</div>
+
+<main class="main container">
+
+  <section class="reports-welcome">
+    <h2>
+        {% if lang == 'en' %}
+            Financial reports
+        {% else %}
+            Фінансові звіти
+        {% endif %}
+        </h2>
+
+        <p>
+           {% if lang == 'en' %}
+        Analyze your income, expenses, and financial trends.
+    {% else %}
+        Аналізуйте доходи, витрати та фінансові тенденції.
+    {% endif %}
+        </p>
+    </section>
+
+
+<section class="report-filters">
+
+    <form method="GET" class="filters-form">
+
+        <div class="filter-group">
+            <label>
+                {% if lang == 'en' %}
+                    From
+                {% else %}
+                    Від
+                {% endif %}
+            </label>
+
+            <input
+                type="date"
+                name="from_date"
+                value="{{ from_date }}"
+            >
+        </div>
+
+        <div class="filter-group">
+            <label>
+                {% if lang == 'en' %}
+                    To
+                {% else %}
+                    До
+                {% endif %}
+            </label>
+
+            <input
+                type="date"
+                name="to_date"
+                value="{{ to_date }}"
+            >
+        </div>
+
+        <div class="filter-group">
+            <label>
+                {% if lang == 'en' %}
+                    Category
+                {% else %}
+                    Категорія
+                {% endif %}
+            </label>
+
+            <select name="category">
+
+                <option value="">
+                    {% if lang == 'en' %}
+                        All categories
+                    {% else %}
+                        Всі категорії
+                    {% endif %}
+                </option>
+
+                {% for category in categories %}
+                    <option
+                        value="{{ category.name }}"
+                        {% if selected_category == category.name %}selected{% endif %}
+                    >
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>
+                {% if lang == 'en' %}
+                    Emotion
+                {% else %}
+                    Емоція
+                {% endif %}
+            </label>
+
+            <select name="emotion">
+
+                <option value="">
+                    {% if lang == 'en' %}
+                        All emotions
+                    {% else %}
+                        Всі емоції
+                    {% endif %}
+                </option>
+
+                {% for emotion in emotions %}
+                    <option
+                        value="{{ emotion.name }}"
+                        {% if selected_emotion == emotion.name %}selected{% endif %}
+                    >
+                        {{ emotion.name }}
+                    </option>
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <button type="submit" class="filter-btn">
+
+            {% if lang == 'en' %}
+                Apply
+            {% else %}
+                Застосувати
+            {% endif %}
+
+        </button>
+
+    </form>
+
+</section>
+
+<section class="analytics-overview">
+
+<section class="summary-cards">
+
+    <div class="summary-card income-card">
+
+        <div class="summary-icon">
+            💰
+        </div>
+
+        <div class="summary-info">
+
+            <h3>
+                {% if lang == 'en' %}
+                    Income
+                {% else %}
+                    Доходи
+                {% endif %}
+            </h3>
+
+            <p>
+                {{ total_income }} {{ currency }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card expense-card">
+
+        <div class="summary-icon">
+            💸
+        </div>
+
+        <div class="summary-info">
+
+            <h3>
+                {% if lang == 'en' %}
+                    Expenses
+                {% else %}
+                    Витрати
+                {% endif %}
+            </h3>
+
+            <p>
+                {{ total_expense }} {{ currency }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card balance-card">
+
+        <div class="summary-icon">
+            📊
+        </div>
+
+        <div class="summary-info">
+
+            <h3>
+                {% if lang == 'en' %}
+                    Balance
+                {% else %}
+                    Баланс
+                {% endif %}
+            </h3>
+
+            <p>
+                {{ balance }} {{ currency }}
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="stats-section">
+<div class="stat-card">
+    <span class="stat-icon"></span>
+
+    <div>
+        <h4>
+            {% if lang == 'en' %}
+                Biggest category
+            {% else %}
+                Найбільша категорія
+            {% endif %}
+        </h4>
+
+              <p data-report="category" data-value="{{ top_category }}">{{ top_category }}</p>
+    </div>
+</div>
+
+<div class="stat-card">
+    <span class="stat-icon"></span>
+
+    <div>
+        <h4>
+            {% if lang == 'en' %}
+                Top emotion
+            {% else %}
+                Найчастіша емоція
+            {% endif %}
+        </h4>
+
+<p data-report="emotion" data-value="{{ top_emotion }}">{{ top_emotion }}</p>
+    </div>
+</div>
+
+
+    <div class="stat-card">
+        <span class="stat-icon"></span>
+
+        <div>
+            <h4>
+                {% if lang == 'en' %}
+                    Average expense
+                {% else %}
+                    Середня витрата
+                {% endif %}
+            </h4>
+
+            <p>{{ average_expense }} {{ currency }}</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <span class="stat-icon"></span>
+
+        <div>
+            <h4>
+                {% if lang == 'en' %}
+                    Transactions
+                {% else %}
+                    Транзакцій
+                {% endif %}
+            </h4>
+
+            <p>{{ transactions_count }}</p>
+        </div>
+    </div>
+
+</section>
+
+</section>
+
+
+<section class="limit-mini-bar">
+
+    <div class="limit-text">
+        {% if lang == 'en' %}
+            Monthly limit usage
+        {% else %}
+            Використання місячного ліміту
+        {% endif %}
+    </div>
+
+    <div class="limit-bar">
+        <div class="limit-fill 
+            {% if limit_used_percent > 100 %}over
+            {% elif limit_used_percent > 85 %}high
+            {% elif limit_used_percent > 60 %}medium
+            {% else %}low
+            {% endif %}"
+            style="width: {{ limit_used_percent }}%;">
+        </div>
+    </div>
+
+    <div class="limit-values">
+        {{ limit_used_amount }} / {{ monthly_limit }} {{ currency }} ({{ limit_used_percent }}%)
+    </div>
+
+</section>
+
+
+<h3 class="section-title">
+    {% if lang == 'en' %}
+        Analytics
+    {% else %}
+        Аналітика
+    {% endif %}
+</h3>
+
+<section class="chart-section">
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+
+            <h3>
+                {% if lang == 'en' %}
+                    Income vs Expenses
+                {% else %}
+                    Доходи vs Витрати
+                {% endif %}
+            </h3>
+
+        </div>
+
+        <canvas id="incomeExpenseChart"></canvas>
+
+    </div>
+
+</section>
+
+<section class="chart-section">
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3>
+                {% if lang == 'en' %}
+                    Expenses by Category
+                {% else %}
+                    Витрати по категоріях
+                {% endif %}
+            </h3>
+        </div>
+
+        <canvas id="categoryPieChart"></canvas>
+
+    </div>
+
+</section>
+
+
+<section class="chart-section">
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3>
+                {% if lang == 'en' %}
+                    Expenses by Emotion
+                {% else %}
+                    Витрати по емоціях
+                {% endif %}
+            </h3>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="emotionPieChart"></canvas>
+        </div>
+
+    </div>
+
+</section>
+
+<section class="chart-section">
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+            <h3>
+                {% if lang == 'en' %}
+                    Cumulative balance
+                {% else %}
+                    Накопичувальний баланс
+                {% endif %}
+            </h3>
+        </div>
+
+        <canvas id="cumulativeChart"></canvas>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        &copy; 2026 SmartFinance.
+
+        {% if lang == 'en' %}
+            All rights reserved.
+        {% else %}
+            Всі права захищені.
+        {% endif %}
+    </p>
+
+    <p>
+
+        {% if lang == 'en' %}
+            Support
+        {% else %}
+            Підтримка
+        {% endif %}
+
+        : support@example.com |
+
+        {% if lang == 'en' %}
+            Phone
+        {% else %}
+            Телефон
+        {% endif %}
+
+        : +38 (050) 123-45-67
+
+    </p>
+
+</footer>
+
+<script src="{% static 'js/reports-charts.js' %}"></script>
+
+<script>
+
+    const labels = JSON.parse('{{ chart_labels|escapejs }}');
+    const incomeData = JSON.parse('{{ income_chart|escapejs }}');
+    const expenseData = JSON.parse('{{ expense_chart|escapejs }}');
+
+    renderIncomeExpenseChart(labels, incomeData, expenseData);
+
+    const pieLabels = JSON.parse('{{ pie_labels|escapejs }}');
+    const pieValues = JSON.parse('{{ pie_values|escapejs }}');
+
+    renderCategoryPieChart(pieLabels, pieValues);
+
+    const emotionLabels = JSON.parse('{{ emotion_chart_labels|escapejs }}');
+    const emotionValues = JSON.parse('{{ emotion_chart_values|escapejs }}');
+
+    renderEmotionPieChart(emotionLabels, emotionValues);
+
+    const cumulativeLabels = JSON.parse('{{ cumulative_labels|escapejs }}');
+    const cumulativeValues = JSON.parse('{{ cumulative_balance|escapejs }}');
+
+    renderCumulativeChart(cumulativeLabels, cumulativeValues);
+    
+</script>
+
+</body>
+</html>

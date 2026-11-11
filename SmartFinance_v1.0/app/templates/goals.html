@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.goals }}</title>
+
+    <link rel="stylesheet" href="{% static 'css/goals.css' %}?v=1">
+</head>
+
+<body class="{{ theme }}">
+
+<header class="header">
+
+    <h1 class="logo">SmartFinance</h1>
+
+    <nav class="nav">
+        <a href="/">{{ t.home }}</a>
+      
+        <a href="/goals/">{{ t.goals }}</a>
+          <a href="/reports/">{{ t.reports }}</a>
+        <a href="/profile/">{{ t.profile }}</a>
+    </nav>
+
+</header>
+
+
+<main class="container">
+
+    <section class="goals-header">
+
+        <h2>{{ t.goals }}</h2>
+
+        <p>
+            {% if lang == 'en' %}
+                Create goals and track your savings progress.
+            {% else %}
+                Створюйте фінансові цілі та відстежуйте накопичення.
+            {% endif %}
+        </p>
+
+    </section>
+
+    <section class="create-goal">
+
+        <h3>
+            {% if lang == 'en' %}
+                Create new goal
+            {% else %}
+                Створити ціль
+            {% endif %}
+        </h3>
+
+
+        <p class="subtext">
+             {% if lang == 'en' %}
+               Saving is simpler than it seems
+             {% else %}
+               Накопичувати простіше, ніж здається
+             {% endif %}
+        </p> 
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="hidden" name="action" value="create_goal">
+
+            <div class="form-group">
+                <label>{{ t.goal_name }}</label>
+                <input type="text" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.target_amount }}</label>
+                <input type="number" step="0.01" name="target_amount" required>
+            </div>
+
+            <button type="submit" class="btn">
+                {{ t.create_goal }}
+            </button>
+
+        </form>
+
+    </section>
+
+    <h3 class="section-title">
+    {% if lang == 'en' %} Your goals {% else %} Ваші цілі {% endif %}
+</h3>
+
+    <section class="goals-list">
+
+        {% if goals %}
+
+            {% for goal in goals %}
+
+                <div class="goal-card">
+
+                    <div class="goal-top">
+
+                        <h3>{{ goal.title }}</h3>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delete_goal">
+                            <input type="hidden" name="goal_id" value="{{ goal.id }}">
+
+                            <button type="submit" class="delete-btn">✕</button>
+                        </form>
+
+                    </div>
+
+
+                     <p class="goal-date">
+    {% if lang == 'en' %}
+        Created: {{ goal.created_at|date:"d.m.Y" }}
+    {% else %}
+        Створено: {{ goal.created_at|date:"d.m.Y" }}
+    {% endif %}
+</p>
+
+                    <div class="goal-info">
+
+                        <p>
+                            {{ goal.saved_amount }} {{ currency }}
+                            /
+                            {{ goal.target_amount }} {{ currency }}
+                        </p>
+
+                        <p>
+                            {{ goal.progress_percent }}%
+                        </p>
+
+                    </div>
+
+
+<div class="progress-bar">
+    <div class="progress-fill"
+         style="width: {{ goal.progress_percent|default:0 }}%;">
+    </div>
+</div>
+
+                    <form method="POST" class="add-money-form">
+
+                        {% csrf_token %}
+
+                        <input type="hidden" name="action" value="add_money">
+                        <input type="hidden" name="goal_id" value="{{ goal.id }}">
+
+                        <input type="number"
+                               step="0.01"
+                               name="amount"
+                               placeholder="{{ t.amount }}"
+                               required>
+
+                        <button type="submit" class="btn">
+                            {{ t.add_money }}
+                        </button>
+
+                    </form>
+
+                    <div class="goal-prediction">
+
+    <p>{{ goal.message }}</p>
+
+</div>
+
+</div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                {% if lang == 'en' %}
+                    No goals yet.
+                {% else %}
+                    Цілей ще немає.
+                {% endif %}
+            </p>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        &copy; 2026 SmartFinance.
+
+        {% if lang == 'en' %}
+            All rights reserved.
+        {% else %}
+            Всі права захищені.
+        {% endif %}
+    </p>
+
+    <p>
+
+        {% if lang == 'en' %}
+            Support
+        {% else %}
+            Підтримка
+        {% endif %}
+
+        : support@example.com |
+
+        {% if lang == 'en' %}
+            Phone
+        {% else %}
+            Телефон
+        {% endif %}
+
+        : +38 (050) 123-45-67
+
+    </p>
+
+</footer>
+
+
+</body>
+</html>

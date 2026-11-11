@@ -1,0 +1,535 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance</title>
+
+     <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
+
+    
+</head>
+
+  <body class="{{ theme }}">
+
+<div class="header-container">
+    <header class="header">
+
+        <h1 class="logo">SmartFinance</h1>
+
+        <nav class="nav">
+            <a href="/">{{ t.home }}</a>
+            <a href="/goals/">{{ t.goals }}</a>
+            <a href="/reports/">{{ t.reports }}</a>
+            <a href="/profile/">{{ t.profile }}</a>
+        </nav>
+
+    </header>
+</div>
+
+
+<main class="main container">
+
+    <section class="welcome">
+        <h2>{{ t.welcome }}</h2>
+
+        <p>
+            {% if lang == 'en' %}
+                Here you can manage income and expenses, analyze your finances and view statistics.
+            {% else %}
+                Тут ви можете вести облік доходів та витрат, аналізувати свої фінанси та отримувати статистику.
+            {% endif %}
+        </p>
+    </section>
+
+
+    {{ transactions|json_script:"transactions" }}
+    
+<div class="chart-summary">
+
+    <div class="summary-card neutral">
+        <div class="summary-title">
+            {% if lang == 'en' %}
+                Previous balance
+            {% else %}
+                Залишок з минулих місяців
+            {% endif %}
+        </div>
+
+        <div class="summary-value">
+            <span id="previousBalance">0</span>
+        </div>
+    </div>
+
+    <div class="summary-card income">
+        <div class="summary-title">
+            {% if lang == 'en' %}
+                Monthly income
+            {% else %}
+                Дохід за місяць
+            {% endif %}
+        </div>
+
+        <div class="summary-value">
+            + <span id="incomeSum">0</span>
+        </div>
+    </div>
+
+    <div class="summary-card expense">
+        <div class="summary-title">
+            {% if lang == 'en' %}
+                Monthly expenses
+            {% else %}
+                Витрати за місяць
+            {% endif %}
+        </div>
+
+        <div class="summary-value">
+            - <span id="expenseSum">0</span>
+        </div>
+    </div>
+
+    <div class="summary-card total">
+        <div class="summary-title">
+            {% if lang == 'en' %}
+                Total balance
+            {% else %}
+                Загальний баланс
+            {% endif %}
+        </div>
+
+        <div class="summary-value">
+            <span id="finalBalance">0</span>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<section class="chart-section">
+
+    <h2>
+        {% if lang == 'en' %}
+            Expenses by category
+        {% else %}
+            Витрати по категоріях
+        {% endif %}
+    </h2>
+
+    <div class="chart-layout">
+
+        <div class="chart-box">
+            <canvas id="transactionsChart"></canvas>
+
+           <div class="chart-center">
+    <div class="chart-total" id="totalSum">0</div>
+    <div class="chart-label">{{ t.balance }}</div>
+</div>
+        </div>
+
+        
+        <div class="chart-details" id="chartLegend"></div>
+
+    </div>
+</section>
+
+    <section class="transactions">
+
+<div class="month-switcher">
+    <button type="button" class="prev-month">←</button>
+
+    <div class="month-year"></div>
+
+    <button type="button" class="next-month">→</button>
+</div>
+
+        <h2>
+            {% if lang == 'en' %}
+                Recent transactions
+            {% else %}
+                Останні транзакції
+            {% endif %}
+        </h2>
+
+        {% if transactions %}
+
+            <div class="transaction-list">
+
+                {% for t in transactions %}
+
+                    <div class="transaction-item {{ t.type }}" data-date="{{ t.date|date:'Y-m-d H:i:s' }}">
+
+                        <div class="transaction-type">
+
+                            {% if t.type == 'income' %}
+
+                                {% if lang == 'en' %}
+                                    Income
+                                {% else %}
+                                    Дохід
+                                {% endif %}
+
+                            {% else %}
+
+                                {% if lang == 'en' %}
+                                    Expense
+                                {% else %}
+                                    Витрата
+                                {% endif %}
+
+                            {% endif %}
+                  
+                        </div>
+                        
+<div class="transaction-actions">
+
+    <button type="button"
+        class="btn edit-btn"
+        onclick="openEditModal(
+            {{ t.id }},
+            '{{ t.type }}',
+            '{{ t.amount }}',
+            '{{ t.category__name }}',
+            '{{ t.emotion__name }}',
+            '{{ t.description }}'
+        )">
+
+    {% if lang == 'en' %}Edit{% else %}Редагувати{% endif %}
+
+</button>
+
+    <form method="POST" action="/transaction/delete/{{ t.id }}/"
+          style="display:inline;"
+          onsubmit="return confirm('{% if lang == "en" %}Delete this transaction?{% else %}Видалити цю транзакцію?{% endif %}')">
+
+        {% csrf_token %}
+
+        <button type="submit" class="btn delete-btn">
+            {% if lang == 'en' %}Delete{% else %}Видалити{% endif %}
+        </button>
+
+    </form>
+
+</div>
+
+
+                       <div class="transaction-amount">
+                        {{ t.amount }}{{ currency }}
+                       </div>
+
+
+                        <div class="transaction-category">
+                            {{ t.category__name }}
+                        </div>
+
+
+                        <div class="transaction-emotion">
+                            {% if t.type == 'expense' %}
+                                {{ t.emotion__name }}
+                            {% endif %}
+                        </div>
+
+
+                        <div class="transaction-description">
+                            {{ t.description }}
+                        </div>
+
+
+                        <div class="transaction-date">
+                            {{ t.date|date:"d.m.Y H:i" }}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <p class="no-transactions">
+
+                {% if lang == 'en' %}
+                    No transactions yet.
+                {% else %}
+                    Транзакції відсутні.
+                {% endif %}
+
+            </p>
+
+        {% endif %}
+
+
+        <button id="openModal" class="btn">
+
+            {% if lang == 'en' %}
+                Add transaction
+            {% else %}
+                Додати транзакцію
+            {% endif %}
+
+        </button>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        &copy; 2026 SmartFinance.
+
+        {% if lang == 'en' %}
+            All rights reserved.
+        {% else %}
+            Всі права захищені.
+        {% endif %}
+    </p>
+
+    <p>
+
+        {% if lang == 'en' %}
+            Support
+        {% else %}
+            Підтримка
+        {% endif %}
+
+        : support@example.com |
+
+        {% if lang == 'en' %}
+            Phone
+        {% else %}
+            Телефон
+        {% endif %}
+
+        : +38 (050) 123-45-67
+
+    </p>
+
+</footer>
+
+
+<div id="transactionModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close">&times;</span>
+
+        <form method="POST" action="/">
+
+            {% csrf_token %}
+
+            <div class="transaction-type">
+
+                <label>
+
+                    <input type="radio" name="type" value="income">
+
+                    {% if lang == 'en' %}
+                        Income
+                    {% else %}
+                        Дохід
+                    {% endif %}
+
+                </label>
+
+
+                <label>
+
+                    <input type="radio" name="type" value="expense">
+
+                    {% if lang == 'en' %}
+                        Expense
+                    {% else %}
+                        Витрата
+                    {% endif %}
+
+                </label>
+
+            </div>
+
+
+            <div class="amount">
+
+                <label>
+
+                    {% if lang == 'en' %}
+                        Amount
+                    {% else %}
+                        Сума
+                    {% endif %}
+
+                    :
+
+                    <input type="number" name="amount">
+
+                </label>
+
+            </div>
+
+
+            <div class="category">
+
+                <label>
+
+                    {% if lang == 'en' %}
+                        Category
+                    {% else %}
+                        Категорія
+                    {% endif %}
+
+                    :
+
+                <select name="category">
+    {% for c in CATEGORIES %}
+        <option value="{{ c.en }}">
+            {% if lang == 'en' %}
+                {{ c.en }}
+            {% else %}
+                {{ c.uk }}
+            {% endif %}
+        </option>
+    {% endfor %}
+</select>
+
+                </label>
+
+            </div>
+
+
+            <div class="emotion">
+
+                <label>
+
+                    {% if lang == 'en' %}
+                        Expense emotion
+                    {% else %}
+                        Емоційність витрати
+                    {% endif %}
+
+                    :
+
+                  <select name="emotion">
+    {% for e in emotions %}
+        <option value="{{ e }}">{{ e }}</option>
+    {% endfor %}
+</select>
+
+                </label>
+
+            </div>
+
+
+            <div class="description">
+
+                <label>
+
+                    {% if lang == 'en' %}
+                        Description
+                    {% else %}
+                        Опис
+                    {% endif %}
+
+                    :
+
+                    <input type="text" name="description">
+
+                </label>
+
+            </div>
+
+
+            <button class="btn" type="submit">
+
+                {% if lang == 'en' %}
+                    Add
+                {% else %}
+                    Додати
+                {% endif %}
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<div id="editModal" class="modal">
+
+    <div class="modal-content">
+
+        <span class="close" onclick="closeEditModal()">&times;</span>
+
+        <form id="editForm" method="POST">
+
+            {% csrf_token %}
+
+            <div class="transaction-type">
+
+                <label>
+                    <input type="radio" name="type" value="income" id="edit_income">
+                    {% if lang == 'en' %}Income{% else %}Дохід{% endif %}
+                </label>
+
+                <label>
+                    <input type="radio" name="type" value="expense" id="edit_expense">
+                    {% if lang == 'en' %}Expense{% else %}Витрата{% endif %}
+                </label>
+
+            </div>
+
+            <div class="amount">
+                <input type="number" name="amount" id="edit_amount">
+            </div>
+
+           <div class="category">
+
+    <select id="edit_category" name="category">
+                {% for c in CATEGORIES %}
+                    <option value="{{ c.en }}">{{ c.en }}</option>
+                {% endfor %}
+            </select>
+
+</div>
+
+<div class="emotion">
+
+    <select name="emotion" id="edit_emotion">
+
+        {% for e in emotions %}
+            <option value="{{ e }}">{{ e }}</option>
+        {% endfor %}
+
+    </select>
+
+</div>
+
+            <div class="description">
+                <input type="text" name="description" id="edit_description">
+            </div>
+
+            <button class="btn" type="submit">
+                {% if lang == 'en' %}Save{% else %}Зберегти{% endif %}
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    window.currentLang = "{{ lang }}";
+</script>
+
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
+
+</body>
+</html>

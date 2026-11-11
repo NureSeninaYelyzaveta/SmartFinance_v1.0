@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFinance - Реєстрація</title>
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <h1 class="app-title">SmartFinance</h1>
+        <div class="auth-box">
+            <h2>Реєстрація</h2>
+            <form method="post">
+                {% csrf_token %}
+  {% for field in form %}
+    <div class="form-group">
+        {% if field.name == 'username' %}
+            <label for="{{ field.id_for_label }}">Email</label>
+        {% else %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {% endif %}
+        {{ field }}
+        {% for error in field.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+    </div>
+{% endfor %}
+                <button type="submit" class="btn">Зареєструватися</button>
+            </form>
+            <p class="switch-auth">Вже є акаунт? <a href="{% url 'login' %}">Увійти</a></p>
+        </div>
+    </div>
+</body>
+</html>

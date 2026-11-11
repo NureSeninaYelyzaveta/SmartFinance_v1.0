@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Авторизація</h2>
+<form method="POST">
+    {% csrf_token %}
+    <label>Логін:</label>
+    <input type="text" name="username" required>
+
+    <label>Пароль:</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Увійти</button>
+</form>
+<p>Ще не зареєстровані? <a href="#">Реєстрація</a></p>
+{% endblock %}

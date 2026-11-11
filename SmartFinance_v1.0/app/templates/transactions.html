@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>
+    {% if lang == 'en' %}
+        Add transaction
+    {% else %}
+        Додати транзакцію
+    {% endif %}
+</h2>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label>
+        {% if lang == 'en' %}
+            Amount:
+        {% else %}
+            Сума:
+        {% endif %}
+    </label>
+
+    <input type="number" step="0.01" name="amount" required>
+
+
+    <label>
+        {% if lang == 'en' %}
+            Category:
+        {% else %}
+            Категорія:
+        {% endif %}
+    </label>
+
+    <select name="category">
+
+    </select>
+
+
+    <label>
+        {% if lang == 'en' %}
+            Emotion:
+        {% else %}
+            Емоція:
+        {% endif %}
+    </label>
+
+    <select name="emotion">
+
+    </select>
+
+
+    <label>
+        {% if lang == 'en' %}
+            Description:
+        {% else %}
+            Опис:
+        {% endif %}
+    </label>
+
+    <textarea name="description"></textarea>
+
+
+    <button type="submit">
+
+        {% if lang == 'en' %}
+            Add
+        {% else %}
+            Додати
+        {% endif %}
+
+    </button>
+
+</form>
+
+{% endblock %}

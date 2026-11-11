@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="uk">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ t.profile }}</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}?v=2">
+</head>
+
+   <body class="{{ profile.theme }}">
+
+   
+<header class="header">
+    <div class="header-container">
+        <h1 class="logo">SmartFinance</h1>
+        <nav class="nav">
+            <a href="/">{{ t.home }}</a>
+            <a href="/goals/">{{ t.goals }}</a>
+            <a href="/reports/">{{ t.reports }}</a>
+            <a href="/profile/">{{ t.profile }}</a>
+        </nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="profile-block">
+        <h2>{{ t.profile }}</h2>
+
+        <form method="POST" enctype="multipart/form-data" class="profile-form">
+            {% csrf_token %}
+
+            <div class="avatar-section">
+                {% if profile.avatar %}
+                    <div class="avatar-wrapper">
+                        <img id="profilePhoto" src="{{ profile.avatar.url }}">
+                    </div>
+                {% endif %}
+
+                <label for="uploadPhoto" class="upload-btn">
+    {{ t.change_photo }}
+</label>
+
+                <input type="file" name="avatar" id="uploadPhoto" onchange="previewAvatar(event)">
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.name }}</label>
+                <input type="text" name="name" value="{{ profile.name }}">
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.language }}</label>
+                <select name="language">
+                    <option value="uk" {% if profile.language == 'uk' %}selected{% endif %}>
+                        Українська
+                    </option>
+                    <option value="en" {% if profile.language == 'en' %}selected{% endif %}>
+                        English
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.theme }}</label>
+                <select name="theme">
+                    <option value="light" {% if profile.theme == 'light' %}selected{% endif %}>
+                        Світла
+                    </option>
+                    <option value="dark" {% if profile.theme == 'dark' %}selected{% endif %}>
+                        Темна
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.currency }}</label>
+                <select name="currency">
+                    <option value="UAH" {% if profile.currency == 'UAH' %}selected{% endif %}>₴</option>
+                    <option value="USD" {% if profile.currency == 'USD' %}selected{% endif %}>$</option>
+                    <option value="EUR" {% if profile.currency == 'EUR' %}selected{% endif %}>€</option>
+                    <option value="PLN" {% if profile.currency == 'PLN' %}selected{% endif %}>zł</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>{{ t.monthly_limit }}</label>
+                <input type="number" step="0.01" name="monthly_limit" value="{{ profile.monthly_limit }}">
+            </div>
+
+            <div class="form-group checkbox">
+                <label>
+                    <input type="checkbox" name="notifications" {% if profile.notifications %}checked{% endif %}>
+                    Сповіщення
+                </label>
+            </div>
+
+            <button type="submit" class="btn">{{ t.save }}</button>
+
+        </form>
+    </div>
+</div>
+
+<footer class="footer">
+
+    <p>
+        &copy; 2026 SmartFinance.
+
+        {% if lang == 'en' %}
+            All rights reserved.
+        {% else %}
+            Всі права захищені.
+        {% endif %}
+    </p>
+
+    <p>
+
+        {% if lang == 'en' %}
+            Support
+        {% else %}
+            Підтримка
+        {% endif %}
+
+        : support@example.com |
+
+        {% if lang == 'en' %}
+            Phone
+        {% else %}
+            Телефон
+        {% endif %}
+
+        : +38 (050) 123-45-67
+
+    </p>
+
+</footer>
+
+<script>
+function previewAvatar(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+        document.getElementById('profilePhoto').src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+</body>
+</html>
